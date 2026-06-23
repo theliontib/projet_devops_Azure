@@ -1,7 +1,7 @@
 # Projet DevOps Azure
 
 ## Objectif
-Apprendre et mettre en place une architecture DevOps avec Docker, Azure et CI/CD.
+Apprendre, comprendre et mettre en place une architecture DevOps avec Docker, Azure et CI/CD.
 
 ---
 
@@ -32,5 +32,5 @@ Pipeline automatique avec GitHub Actions :
 
 ---
 
-## Auteur
+## Note
 Projet réalisé dans le cadre d’une auto formation DevOps. Guidé par l'IA sur une suite de TP.
