@@ -2,52 +2,57 @@ name: CI/CD Azure
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Login Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Login Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Login ACR
-      run: |
-        docker login ${{ secrets.ACR_NAME }}.azurecr.io \
-        -u ${{ secrets.ACR_USERNAME }} \
-        -p ${{ secrets.ACR_PASSWORD }}
+      - name: Login ACR
+        run: |
+          echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.ACR_NAME }}.azurecr.io \
+            -u ${{ secrets.ACR_USERNAME }} \
+            --password-stdin
 
-    - name: Build image
-      run: docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2 -f docker/Dockerfile .
+      - name: Build image
+        run: |
+          docker build \
+            -t ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2 \
+            -f docker/Dockerfile .
 
-    - name: Push image
-      run: docker push ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2
+      - name: Push image
+        run: |
+          docker push ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2
 
-    - name: Delete existing container
-      continue-on-error: true
-      run: |
-        az container delete \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --name ${{ secrets.CONTAINER_NAME }} \
-          --yes
+      - name: Delete existing container
+        continue-on-error: true
+        run: |
+          az container delete \
+            --resource-group devops-rg \
+            --name app-devops \
+            --yes
 
-    - name: Deploy new container
-      run: |
-        az container create \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --name ${{ secrets.CONTAINER_NAME }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2 \
-          --registry-login-server ${{ secrets.ACR_NAME }}.azurecr.io \
-          --registry-username ${{ secrets.ACR_USERNAME }} \
-          --registry-password ${{ secrets.ACR_PASSWORD }} \
-          --dns-name-label ${{ secrets.DNS_LABEL }} \
-          --ports 3000 \
-          --os-type Linux \
-          --cpu 1 \
-          --memory 1
+      - name: Deploy new container
+        run: |
+          az container create \
+            --resource-group devops-rg \
+            --name app-devops \
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2 \
+            --registry-login-server ${{ secrets.ACR_NAME }}.azurecr.io \
+            --registry-username ${{ secrets.ACR_USERNAME }} \
+            --registry-password ${{ secrets.ACR_PASSWORD }} \
+            --dns-name-label appthibautdevops123 \
+            --ports 3000 \
+            --os-type Linux \
+            --cpu 1 \
+            --memory 1
