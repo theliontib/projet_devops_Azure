@@ -1,140 +1,217 @@
-# Projet DevOps Azure
+# 🚀 Projet DevOps Azure
 
-## Objectif
+## 📌 Objectif
 
-Apprendre et mettre en pratique les concepts DevOps avec Docker et Azure en déployant une application conteneurisée dans le cloud.
+Apprendre et mettre en pratique les concepts DevOps en construisant une chaîne complète de déploiement :
 
----
-
-## Architecture
-
-Application Node.js  
-→ Docker Image  
-→ Azure Container Registry (ACR)  
-→ Azure Container Instance (ACI)  
-→ URL publique
+- Développement d'une application Node.js
+- Containerisation avec Docker
+- Stockage des images dans Azure Container Registry
+- Déploiement dans Azure Container Instance
+- Automatisation avec GitHub Actions
 
 ---
 
-## Stack
+## 🏗️ Architecture
 
+```text
+Application Node.js
+        ↓
+     Docker
+        ↓
+ Docker Image
+        ↓
+Azure Container Registry (ACR)
+        ↓
+Azure Container Instance (ACI)
+        ↓
+Application accessible sur Internet
+```
+
+---
+
+## 🛠️ Technologies utilisées
+
+- Node.js
 - Docker
 - Azure Container Registry (ACR)
 - Azure Container Instance (ACI)
-- GitHub Actions (à venir)
-- Terraform (à venir)
-- Kubernetes (bonus)
+- GitHub Actions
+- Azure CLI
+
+### À venir
+
+- Terraform
+- Kubernetes
 
 ---
 
-## Fonctionnement
+## 📂 Structure du projet
 
-1. Création d'une application Node.js
-2. Création d'une image Docker
-3. Tests en local avec Docker
-4. Push de l'image vers Azure Container Registry
-5. Déploiement sur Azure Container Instance
-6. Exposition de l'application sur Internet
-
----
-
-## Commandes principales
-
-### Build de l'image
-
-```bash
-docker build -t devopsazure.azurecr.io/app:v2 -f docker/Dockerfile .
-```
-
-### Push de l'image vers Azure
-
-```bash
-docker push devopsazure.azurecr.io/app:v2
+```text
+projet-devops-azure/
+│
+├── app.js
+├── package.json
+│
+├── docker/
+│   └── Dockerfile
+│
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml
+│
+└── README.md
 ```
 
 ---
 
-## Vérifications
+## ⚙️ Fonctionnement
 
-### État du conteneur
+### 1. Développement
+
+Création d'une application Node.js simple exposant un service HTTP.
+
+### 2. Containerisation
+
+Création d'une image Docker via un Dockerfile.
 
 ```bash
-az container show \
---resource-group devops-rg \
---name app-devops \
---query instanceView.state
+docker build -t app .
 ```
 
-### Logs
+### 3. Test local
+
+Exécution du conteneur localement.
 
 ```bash
-az container logs \
---resource-group devops-rg \
---name app-devops
+docker run -p 3000:3000 app
 ```
 
-### URL publique
+### 4. Stockage dans Azure
+
+Push de l'image vers Azure Container Registry.
 
 ```bash
-az container show \
---resource-group devops-rg \
---name app-devops \
---query ipAddress.fqdn \
--o tsv
+docker push devopsazure.azurecr.io/mon-app-devops:v2
+```
+
+### 5. Déploiement Cloud
+
+Déploiement automatique de l'image dans Azure Container Instance.
+
+---
+
+## 🔄 CI/CD avec GitHub Actions
+
+À chaque push sur la branche `main` :
+
+```text
+Git Push
+    ↓
+GitHub Actions
+    ↓
+Build Docker
+    ↓
+Push Azure Container Registry
+    ↓
+Suppression du conteneur existant
+    ↓
+Création du nouveau conteneur
+    ↓
+Application mise à jour automatiquement
 ```
 
 ---
 
-## Compétences acquises
+## 🔐 Authentification
 
-- Création d'images Docker
-- Compréhension du Dockerfile
-- Gestion d'un Azure Container Registry
-- Déploiement d'un conteneur dans Azure
-- Gestion des tags d'images (v1, v2, etc.)
-- Compréhension du cycle de vie d'une application conteneurisée
-- Publication d'une application via une URL publique
+### Azure Credentials
 
----
+Service Principal Azure utilisé par GitHub Actions pour se connecter à Azure.
 
-## Concepts retenus
+Secret GitHub :
 
-### Dockerfile
-
-Le Dockerfile est la recette permettant de construire une image Docker.
-
-### Image Docker
-
-L'image contient l'application et toutes ses dépendances. Elle est stockée dans Azure Container Registry.
-
-### Container
-
-Le conteneur est une instance en exécution d'une image Docker.
+```text
+AZURE_CREDENTIALS
+```
 
 ### Azure Container Registry
 
-Le Registry permet de stocker et distribuer les images Docker.
+Secrets GitHub utilisés pour publier les images Docker :
 
-### Azure Container Instance
-
-Azure Container Instance permet d'exécuter directement un conteneur dans Azure sans avoir à gérer de machine virtuelle.
-
----
-
-## Cycle de déploiement
-
-Code source  
-→ Dockerfile  
-→ Image Docker  
-→ Azure Container Registry  
-→ Azure Container Instance  
-→ Application accessible sur Internet
+```text
+ACR_NAME
+ACR_USERNAME
+ACR_PASSWORD
+```
 
 ---
 
-## Évolutions prévues
+## ✅ Compétences acquises
 
-- Mise en place d'un pipeline CI/CD avec GitHub Actions
-- Déploiement automatisé
-- Infrastructure as Code avec Terraform
-- Orchestration de conteneurs avec Kubernetes
+### Docker
+
+- Création d'images
+- Dockerfile
+- Gestion des tags
+- Exécution de conteneurs
+
+### Azure
+
+- Resource Groups
+- Azure Container Registry
+- Azure Container Instance
+- Déploiement d'applications conteneurisées
+
+### GitHub Actions
+
+- Workflows YAML
+- Gestion des Secrets
+- Intégration Continue (CI)
+- Déploiement Continu (CD)
+
+---
+
+## 📈 État du projet
+
+### Réalisé
+
+- ✅ Application Node.js
+- ✅ Dockerisation
+- ✅ Build local
+- ✅ Azure Container Registry
+- ✅ Azure Container Instance
+- ✅ Déploiement dans Azure
+- ✅ GitHub Actions
+- ✅ CI/CD automatique
+
+### Prochaines étapes
+
+- 🚧 Terraform (Infrastructure as Code)
+- 🚧 Kubernetes (Orchestration)
+- 🚧 Monitoring et observabilité
+
+---
+
+## 🎯 Objectif final
+
+```text
+Code
+ ↓
+GitHub
+ ↓
+GitHub Actions
+ ↓
+Docker Build
+ ↓
+Azure Container Registry
+ ↓
+Azure Container Instance / Kubernetes
+ ↓
+Application disponible sur Internet
+```
+
+---
+
+Projet réalisé dans le cadre d'un apprentissage DevOps et Cloud Azure.
