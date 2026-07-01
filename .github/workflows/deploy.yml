@@ -24,7 +24,7 @@ jobs:
         -p ${{ secrets.ACR_PASSWORD }}
 
     - name: Build image
-      run: docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2 .
+      run: docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2 -f docker/Dockerfile .
 
     - name: Push image
       run: docker push ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2
