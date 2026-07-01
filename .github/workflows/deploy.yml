@@ -1,1 +1,30 @@
+name: CI/CD Azure
 
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Login Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Login ACR
+      run: |
+        docker login ${{ secrets.ACR_NAME }}.azurecr.io \
+        -u ${{ secrets.ACR_USERNAME }} \
+        -p ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build image
+      run: docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2 .
+
+    - name: Push image
+      run: docker push ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2
