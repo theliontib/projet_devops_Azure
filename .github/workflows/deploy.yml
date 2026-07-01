@@ -28,3 +28,26 @@ jobs:
 
     - name: Push image
       run: docker push ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2
+
+    - name: Delete existing container
+      continue-on-error: true
+      run: |
+        az container delete \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --name ${{ secrets.CONTAINER_NAME }} \
+          --yes
+
+    - name: Deploy new container
+      run: |
+        az container create \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --name ${{ secrets.CONTAINER_NAME }} \
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/mon-app-devops:v2 \
+          --registry-login-server ${{ secrets.ACR_NAME }}.azurecr.io \
+          --registry-username ${{ secrets.ACR_USERNAME }} \
+          --registry-password ${{ secrets.ACR_PASSWORD }} \
+          --dns-name-label ${{ secrets.DNS_LABEL }} \
+          --ports 3000 \
+          --os-type Linux \
+          --cpu 1 \
+          --memory 1
