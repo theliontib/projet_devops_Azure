@@ -43,7 +43,7 @@ Application accessible sur Internet
 
 - Terraform
 - Kubernetes
-
+- Ansible
 ---
 
 ## 📂 Structure du projet
@@ -191,6 +191,7 @@ ACR_PASSWORD
 - 🚧 Terraform (Infrastructure as Code)
 - 🚧 Kubernetes (Orchestration)
 - 🚧 Monitoring et observabilité
+- 🚧 Ansible
 
 ---
 
